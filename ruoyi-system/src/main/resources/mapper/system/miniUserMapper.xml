@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.miniUserMapper">
+    
+    <resultMap type="miniUser" id="miniUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="username"    column="username"    />
+        <result property="avatarUrl"    column="avatarUrl"    />
+        <result property="phone"    column="phone"    />
+        <result property="password"    column="password"    />
+        <result property="status"    column="status"    />
+        <result property="openId"    column="open_id"    />
+        <result property="unionId"    column="union_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="time"    column="time"    />
+    </resultMap>
+
+    <sql id="selectminiUserVo">
+        select user_id, username, avatarUrl, phone, password, status, open_id, union_id, create_time, update_time, time from miniUser
+    </sql>
+
+    <select id="selectminiUserList" parameterType="miniUser" resultMap="miniUserResult">
+        <include refid="selectminiUserVo"/>
+        <where>  
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="avatarUrl != null  and avatarUrl != ''"> and avatarUrl = #{avatarUrl}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="openId != null "> and open_id = #{openId}</if>
+            <if test="unionId != null "> and union_id = #{unionId}</if>
+            <if test="time != null "> and time = #{time}</if>
+        </where>
+    </select>
+    
+    <select id="selectminiUserByUserId" parameterType="Long" resultMap="miniUserResult">
+        <include refid="selectminiUserVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertminiUser" parameterType="miniUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into miniUser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="avatarUrl != null">avatarUrl,</if>
+            <if test="phone != null">phone,</if>
+            <if test="password != null">password,</if>
+            <if test="status != null">status,</if>
+            <if test="openId != null">open_id,</if>
+            <if test="unionId != null">union_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="time != null">time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="password != null">#{password},</if>
+            <if test="status != null">#{status},</if>
+            <if test="openId != null">#{openId},</if>
+            <if test="unionId != null">#{unionId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="time != null">#{time},</if>
+         </trim>
+    </insert>
+
+    <update id="updateminiUser" parameterType="miniUser">
+        update miniUser
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="username != null">username = #{username},</if>
+            <if test="avatarUrl != null">avatarUrl = #{avatarUrl},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="openId != null">open_id = #{openId},</if>
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="time != null">time = #{time},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteminiUserByUserId" parameterType="Long">
+        delete from miniUser where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteminiUserByUserIds" parameterType="String">
+        delete from miniUser where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

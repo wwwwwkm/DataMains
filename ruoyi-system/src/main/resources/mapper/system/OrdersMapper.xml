@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OrdersMapper">
+    
+    <resultMap type="Orders" id="OrdersResult">
+        <result property="id"    column="id"    />
+        <result property="artID"    column="artID"    />
+        <result property="userID"    column="userID"    />
+        <result property="date"    column="date"    />
+        <result property="paytype"    column="paytype"    />
+        <result property="price"    column="price"    />
+        <result property="fpay"    column="fpay"    />
+        <result property="ispay"    column="ispay"    />
+        <result property="refundStatus"    column="refund_status"    />
+        <result property="refundAmount"    column="refund_amount"    />
+        <result property="payStatus"    column="pay_status"    />
+    </resultMap>
+
+    <sql id="selectOrdersVo">
+        select id, artID, userID, date, paytype, price, fpay, ispay, refund_status, refund_amount, pay_status from orders
+    </sql>
+
+    <select id="selectOrdersList" parameterType="Orders" resultMap="OrdersResult">
+        <include refid="selectOrdersVo"/>
+        <where>  
+            <if test="artID != null "> and artID = #{artID}</if>
+            <if test="userID != null "> and userID = #{userID}</if>
+            <if test="date != null  and date != ''"> and date = #{date}</if>
+            <if test="paytype != null  and paytype != ''"> and paytype = #{paytype}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="fpay != null "> and fpay = #{fpay}</if>
+            <if test="ispay != null "> and ispay = #{ispay}</if>
+            <if test="refundStatus != null  and refundStatus != ''"> and refund_status = #{refundStatus}</if>
+            <if test="refundAmount != null "> and refund_amount = #{refundAmount}</if>
+            <if test="payStatus != null "> and pay_status = #{payStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrdersById" parameterType="Long" resultMap="OrdersResult">
+        <include refid="selectOrdersVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOrders" parameterType="Orders" useGeneratedKeys="true" keyProperty="id">
+        insert into orders
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="artID != null">artID,</if>
+            <if test="userID != null">userID,</if>
+            <if test="date != null and date != ''">date,</if>
+            <if test="paytype != null">paytype,</if>
+            <if test="price != null">price,</if>
+            <if test="fpay != null">fpay,</if>
+            <if test="ispay != null">ispay,</if>
+            <if test="refundStatus != null">refund_status,</if>
+            <if test="refundAmount != null">refund_amount,</if>
+            <if test="payStatus != null">pay_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="artID != null">#{artID},</if>
+            <if test="userID != null">#{userID},</if>
+            <if test="date != null and date != ''">#{date},</if>
+            <if test="paytype != null">#{paytype},</if>
+            <if test="price != null">#{price},</if>
+            <if test="fpay != null">#{fpay},</if>
+            <if test="ispay != null">#{ispay},</if>
+            <if test="refundStatus != null">#{refundStatus},</if>
+            <if test="refundAmount != null">#{refundAmount},</if>
+            <if test="payStatus != null">#{payStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrders" parameterType="Orders">
+        update orders
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="artID != null">artID = #{artID},</if>
+            <if test="userID != null">userID = #{userID},</if>
+            <if test="date != null and date != ''">date = #{date},</if>
+            <if test="paytype != null">paytype = #{paytype},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="fpay != null">fpay = #{fpay},</if>
+            <if test="ispay != null">ispay = #{ispay},</if>
+            <if test="refundStatus != null">refund_status = #{refundStatus},</if>
+            <if test="refundAmount != null">refund_amount = #{refundAmount},</if>
+            <if test="payStatus != null">pay_status = #{payStatus},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrdersById" parameterType="Long">
+        delete from orders where id = #{id}
+    </delete>
+
+    <delete id="deleteOrdersByIds" parameterType="String">
+        delete from orders where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

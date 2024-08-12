@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OrdersArticleUserMapper">
+    
+    <resultMap type="OrdersArticleUser" id="OrdersArticleUserResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="articleId"    column="article_id"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectOrdersArticleUserVo">
+        select order_id, article_id, user_id from orders_article_user
+    </sql>
+
+    <select id="selectOrdersArticleUserList" parameterType="OrdersArticleUser" resultMap="OrdersArticleUserResult">
+        <include refid="selectOrdersArticleUserVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectOrdersArticleUserByOrderId" parameterType="Long" resultMap="OrdersArticleUserResult">
+        <include refid="selectOrdersArticleUserVo"/>
+        where order_id = #{orderId}
+    </select>
+
+    <insert id="insertOrdersArticleUser" parameterType="OrdersArticleUser">
+        insert into orders_article_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="articleId != null">article_id,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="articleId != null">#{articleId},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrdersArticleUser" parameterType="OrdersArticleUser">
+        update orders_article_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="articleId != null">article_id = #{articleId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="deleteOrdersArticleUserByOrderId" parameterType="Long">
+        delete from orders_article_user where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteOrdersArticleUserByOrderIds" parameterType="String">
+        delete from orders_article_user where order_id in 
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+</mapper>

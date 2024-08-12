@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActivityMapper">
+    
+    <resultMap type="Activity" id="ActivityResult">
+        <result property="id"    column="id"    />
+        <result property="address"    column="address"    />
+        <result property="essay"    column="essay"    />
+        <result property="organizer"    column="organizer"    />
+        <result property="holdTime"    column="hold_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="expirationTime"    column="expiration_time"    />
+    </resultMap>
+
+    <sql id="selectActivityVo">
+        select id, address, essay, organizer, hold_time, create_time, expiration_time from activity
+    </sql>
+
+    <select id="selectActivityList" parameterType="Activity" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        <where>  
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="essay != null  and essay != ''"> and essay = #{essay}</if>
+            <if test="organizer != null  and organizer != ''"> and organizer = #{organizer}</if>
+            <if test="holdTime != null "> and hold_time = #{holdTime}</if>
+            <if test="expirationTime != null "> and expiration_time = #{expirationTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectActivityById" parameterType="Long" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertActivity" parameterType="Activity" useGeneratedKeys="true" keyProperty="id">
+        insert into activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="address != null">address,</if>
+            <if test="essay != null">essay,</if>
+            <if test="organizer != null">organizer,</if>
+            <if test="holdTime != null">hold_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="expirationTime != null">expiration_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="address != null">#{address},</if>
+            <if test="essay != null">#{essay},</if>
+            <if test="organizer != null">#{organizer},</if>
+            <if test="holdTime != null">#{holdTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="expirationTime != null">#{expirationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActivity" parameterType="Activity">
+        update activity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="address != null">address = #{address},</if>
+            <if test="essay != null">essay = #{essay},</if>
+            <if test="organizer != null">organizer = #{organizer},</if>
+            <if test="holdTime != null">hold_time = #{holdTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="expirationTime != null">expiration_time = #{expirationTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActivityById" parameterType="Long">
+        delete from activity where id = #{id}
+    </delete>
+
+    <delete id="deleteActivityByIds" parameterType="String">
+        delete from activity where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MessageMapper">
+    
+    <resultMap type="Message" id="MessageResult">
+        <result property="id"    column="id"    />
+        <result property="memberId"    column="member_id"    />
+        <result property="publisher"    column="publisher"    />
+        <result property="messageType"    column="message_type"    />
+        <result property="content"    column="content"    />
+        <result property="isRead"    column="is_read"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectMessageVo">
+        select id, member_id, publisher, message_type, content, is_read, created_time, is_deleted from message
+    </sql>
+
+    <select id="selectMessageList" parameterType="Message" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        <where>  
+            <if test="memberId != null "> and member_id = #{memberId}</if>
+            <if test="publisher != null  and publisher != ''"> and publisher = #{publisher}</if>
+            <if test="messageType != null "> and message_type = #{messageType}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="isRead != null "> and is_read = #{isRead}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectMessageById" parameterType="Long" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMessage" parameterType="Message" useGeneratedKeys="true" keyProperty="id">
+        insert into message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">member_id,</if>
+            <if test="publisher != null and publisher != ''">publisher,</if>
+            <if test="messageType != null">message_type,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="isRead != null">is_read,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberId != null">#{memberId},</if>
+            <if test="publisher != null and publisher != ''">#{publisher},</if>
+            <if test="messageType != null">#{messageType},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="isRead != null">#{isRead},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMessage" parameterType="Message">
+        update message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="memberId != null">member_id = #{memberId},</if>
+            <if test="publisher != null and publisher != ''">publisher = #{publisher},</if>
+            <if test="messageType != null">message_type = #{messageType},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="isRead != null">is_read = #{isRead},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMessageById" parameterType="Long">
+        delete from message where id = #{id}
+    </delete>
+
+    <delete id="deleteMessageByIds" parameterType="String">
+        delete from message where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PictureMapper">
+    
+    <resultMap type="Picture" id="PictureResult">
+        <result property="id"    column="id"    />
+        <result property="url"    column="url"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectPictureVo">
+        select id, url, name, type from picture
+    </sql>
+
+    <select id="selectPictureList" parameterType="Picture" resultMap="PictureResult">
+        <include refid="selectPictureVo"/>
+        <where>  
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectPictureById" parameterType="Long" resultMap="PictureResult">
+        <include refid="selectPictureVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPicture" parameterType="Picture" useGeneratedKeys="true" keyProperty="id">
+        insert into picture
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="url != null and url != ''">url,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePicture" parameterType="Picture">
+        update picture
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePictureById" parameterType="Long">
+        delete from picture where id = #{id}
+    </delete>
+
+    <delete id="deletePictureByIds" parameterType="String">
+        delete from picture where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

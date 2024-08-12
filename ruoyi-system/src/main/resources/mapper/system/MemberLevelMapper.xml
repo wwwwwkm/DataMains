@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MemberLevelMapper">
+    
+    <resultMap type="MemberLevel" id="MemLevelResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="icon"    column="icon"    />
+        <result property="description"    column="description"    />
+    </resultMap>
+
+    <sql id="selectMemLevelVo">
+        select id, name, icon, description from Mem_level
+    </sql>
+
+    <select id="selectMemLevelList" parameterType="MemberLevel" resultMap="MemLevelResult">
+        <include refid="selectMemLevelVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+        </where>
+    </select>
+    
+    <select id="selectMemLevelById" parameterType="Long" resultMap="MemLevelResult">
+        <include refid="selectMemLevelVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMemLevel" parameterType="MemberLevel" useGeneratedKeys="true" keyProperty="id">
+        insert into Mem_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="icon != null">icon,</if>
+            <if test="description != null">description,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="description != null">#{description},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMemLevel" parameterType="MemberLevel">
+        update member_level
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="description != null">description = #{description},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMemLevelById" parameterType="Long">
+        delete from member_level where id = #{id}
+    </delete>
+
+    <delete id="deleteMemberLevelByIds" parameterType="String">
+        delete from member_level where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
